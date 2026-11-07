@@ -1,2 +1,0 @@
-# UwU
-ze game
