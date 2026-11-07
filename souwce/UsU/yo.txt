@@ -1,0 +1,59 @@
+#include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
+#include <iostream>
+
+int main()
+{
+    SDL_Init(0);
+
+    SDL_IOStream* io = SDL_IOFromFile("animation.gif", "wb");
+
+    if (!io) {
+        std::cerr << SDL_GetError() << '\n';
+        return 1;
+    }
+
+    // Create GIF animation stream
+    IMG_AnimationStream* stream =
+        IMG_CreateAnimationStream_IO(io, true, "gif");
+
+    if (!stream) {
+        std::cerr << SDL_GetError() << '\n';
+        SDL_CloseIO(io);
+        return 1;
+    }
+
+    for (int i = 0; i < 10; ++i)
+    {
+        SDL_Surface* frame = SDL_CreateSurface(
+            320,
+            240,
+            SDL_PIXELFORMAT_RGBA32
+        );
+
+        // Draw your frame here.
+        // For example, draw a moving object based on i.
+
+        // Add frame with 100 ms delay
+        if (!IMG_AddAnimationFrame(stream, frame, 100)) {
+            std::cerr << "Failed to add frame: "
+                      << SDL_GetError() << '\n';
+
+            SDL_DestroySurface(frame);
+            IMG_CloseAnimationStream(stream);
+            SDL_Quit();
+            return 1;
+        }
+
+        SDL_DestroySurface(frame);
+    }
+
+    // Finalize and write GIF
+    if (!IMG_CloseAnimationStream(stream)) {
+        std::cerr << "Failed to close GIF: "
+                  << SDL_GetError() << '\n';
+    }
+
+    SDL_Quit();
+    return 0;
+}

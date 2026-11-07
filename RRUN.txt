@@ -1,0 +1,8 @@
+ARCH LINUX:
+
+sudo pacman -S --needed base-devel gcc
+sudo pacman -S sdl3
+g++ $(find . -type f -name '*.cpp') -o :3 $(pkg-config --cflags --libs sdl3 sdl3-image)
+./:3
+chmod +x mrriw.sh
+./mrriw.sh
