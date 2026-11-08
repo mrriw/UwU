@@ -2,4 +2,4 @@
 *purrrrs*
 mrriw :3
 
-want the executable? :3
+want ze executable? i hope RRUN works :3
