@@ -12,9 +12,14 @@
 #include <SDL3/SDL_gpu.h> /// <3
 #include <SDL3_image/SDL_image.h>
 
+#include <array>
+#include <filesystem>
+#include <span>
+#include <string>
+
 #define INF 255
 #define PI 3.14f
-#define DIR STR("souwce/")
+#define DIR STR("")
 
 #define DBG(w) (std::cout << (w) << "\n");
 #define Fiw(w) (for (U4 i = 0; i < w.size(); i++))
@@ -73,7 +78,6 @@ public:
   fowce& operator*=(F2 f) { x *= f; y *= f; return *this; }
   void dbg() { std::cout << "[" << x << " " << y << "]\n"; }
 }; typedef fowce F;
-inline F gf;
 
 enum ewntCode {
     E_DEAD

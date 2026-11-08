@@ -1,9 +1,16 @@
 #include "U_U.h"
 
+
+//// worm dead 
+//// worm constante snelheid
+//// address: 1600 Pennsylvania Avenue NW / Washington, DC 20500 / United States // come visit me anytime :3
+//// SDL ewent == straight
 //// pwants
 //// auto dit
 //// gwavit
 //// collisions pixel 
+//// uWuWWWWuUwU
+//// VuuuuuUuUuuuuuuV
 //// bg
 //// color VcVheme
 //// VsVext ook,?
@@ -17,15 +24,12 @@
 //// pwanet sized mrrrews
 //// spawn animatyie
 //// mew purrrrrrrrrring
-//// kys button
 //// oum sada
 //// powes
 //// pwojectilles
-//// UtU
 //// lSYS
 //// gwappl
 //// mew-mrrew
-//// nm fr lvl cls
 //// ghost mode
 //// eyezzzzzzzz detatch
 //// settings tab
@@ -40,3 +44,4 @@
 //// VcVale z met diameter
 //// memowyyytyyyyyyyoyoooowsovrtiumzytgmcfhdsywhlgfkvhfd=lkvchqs<d:ktjh
 //// mriewrrr
+//// initr video en sound als #def

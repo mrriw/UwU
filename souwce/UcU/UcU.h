@@ -10,11 +10,12 @@ typedef enum {
   C_RIGHT,
   C_JUMP,
   C_UPGWADE,
-  
+
   C_MM, // middle
   C_M0,
-  C_M1,
-  C_END } CI;
+  C_KYS,
+  C_END
+} CI;
 
 // conwols
 class UcU : public U_U {
@@ -25,27 +26,22 @@ protected:
   BT ShConwols[C_END];
   F mf{0, 0};
   U4 sid = 0;
+
 public:
-  UcU() : 
-    keyewnts {
-      SDLK_Z,
-      SDLK_S,
-      SDLK_Q,
-      SDLK_D,
-      SDLK_SPACE,
-      SDLK_U }, 
-    btnewnts {
-      SDL_BUTTON_MIDDLE,
-      SDL_BUTTON_LEFT,
-      SDL_BUTTON_RIGHT } { 
-    for (size_t i = 0; i < C_END; i++) conwols[i] = false; 
-    for (size_t i = 0; i < C_END; i++) ShConwols[i] = conwols[i]; 
+  UcU()
+      : keyewnts{SDLK_Z, SDLK_S, SDLK_Q, SDLK_D, SDLK_SPACE, SDLK_U},
+        btnewnts{SDL_BUTTON_MIDDLE, SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT} {
+    for (size_t i = 0; i < C_END; i++)
+      conwols[i] = false;
+    for (size_t i = 0; i < C_END; i++)
+      ShConwols[i] = conwols[i];
     sid = usu.add("crrsr");
-    SDL_HideCursor(); }
-  void ewnt(SDL_Event* e) override;
+    SDL_HideCursor();
+  }
+  void ewnt(SDL_Event *e);
   void itwt() override;
-  ~UcU() {}  
-  
+  ~UcU() {}
+
   F gtMF() { return usu.twanswate(mf); }
   BT gtConwol(CI ci) { return conwols[ci]; }
   BT gtConwolPuwse(CI ci) { return conwols[ci] > ShConwols[ci]; }

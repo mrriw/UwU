@@ -12,7 +12,6 @@ void UcU::ewnt(SDL_Event* e) {
         if (e->button.button == btnewnts[i])
           conwols[i + C_MM] = false;
       break;
-      
     case SDL_EVENT_KEY_DOWN:
       for (size_t i = 0; i < C_MM; i++)
         if (e->key.key == keyewnts[i])
@@ -23,13 +22,11 @@ void UcU::ewnt(SDL_Event* e) {
         if (e->key.key == keyewnts[i])
           conwols[i] = false;
       break;
-      
     case SDL_EVENT_MOUSE_MOTION:
       F2 x, y;
       SDL_GetMouseState(&x, &y);
       mf = F(x, y);
       break;
-      
     default:
       break;}
 }

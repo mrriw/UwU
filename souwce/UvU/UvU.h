@@ -24,7 +24,6 @@ public:
   void play(U4 vid);
 
   UvU();
-  void ewnt(SDL_Event* e) override;
   void itwt() override;
   ~UvU();
 };

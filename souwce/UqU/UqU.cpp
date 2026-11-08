@@ -1,14 +1,5 @@
 #include "UqU.h"
 
+UqU::UqU() {}
 
-UqU::UqU() {
-
-}
-
-void UqU::ewnt(SDL_Event* e) {
-  
-}
-
-void UqU::itwt() {  
-
-}
+void UqU::itwt() {}

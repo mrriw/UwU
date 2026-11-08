@@ -13,7 +13,6 @@ class UgU : public U_U {
 protected:
 public:
   UgU();
-  void ewnt(SDL_Event* e) override;
   void itwt() override;
   ~UgU() {} 
 };

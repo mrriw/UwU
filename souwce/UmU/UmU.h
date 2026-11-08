@@ -8,7 +8,6 @@ private:
 protected:
 public:
   UmU();
-  void ewnt(SDL_Event* e) override;
   void itwt() override;
   ~UmU() {}  
 };

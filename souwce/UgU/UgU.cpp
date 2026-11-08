@@ -1,14 +1,5 @@
 #include "UgU.h"
 
+UgU::UgU() {}
 
-UgU::UgU() {
-
-}
-
-void UgU::ewnt(SDL_Event* e) {
-  
-}
-
-void UgU::itwt() {  
-
-}
+void UgU::itwt() {}

@@ -1,6 +1,9 @@
 #pragma once
 #include "../U_U/U_U.h"
 
+/// out class (mixt v&s)
+/// ss->rndr(fwames ook)
+
 #define S_W 256
 #define S_H 256
 #define S_FPS 32
@@ -15,8 +18,7 @@ protected:
 
   S4 w;
   S4 h;
-  F2 cx = S_W/2;
-  F2 cy = S_H/2;
+  PS<F> cf;
   
   std::vector<S2> fr;
   std::vector<U4> id;
@@ -41,21 +43,25 @@ protected:
   
 public:
   U4 add(STR n);
+  
+  void stCntr(PS<F> f) { cf = f; } // maar 1 ding tegelijk
 
   void gtColor(const F& f, U1* r, U1* g, U1* b, U1* a) { SDL_ReadSurfacePixel(surface, f.x, f.y, r, g, b, a); }
   void stColor(U1 r, U1 g, U1 b, U1 a) { SDL_SetRenderDrawColor(rndrr, r, g, b, a); }
+
+  STR gtNm(U4 i) { return names[id[i]]; }
   
   void rndrPoint(const F& f) { SDL_RenderPoint(rndrr, f.x, f.y); }
   void rndrLine(const F& f0, const F& f1) { SDL_RenderLine(rndrr, f0.x, f0.y, f1.x, f1.y); }
   void rndrRect(const F& f0, const F& f1, BT fill);
   void rndrCircle(const F& f, F2 r);
-  void rndrSpwite(const F& f, U4 sid);
+  void rndrSpwite(const F& f, U4 i);
   void rndrTxt(const F& f, STR txt);
   
-  F twanswate(const F& f) { return F((f.x - w / 2) / z + cx, (f.y - h / 2) / z + cy ); };
+  void resize() { SDL_GetWindowSize(window, &w, &h); }
+  F twanswate(const F& f) { return F((f.x - w / 2.0f) / z + cf->x, (f.y - h / 2.0f) / z + cf->y ); };
 
   UsU();
-  void ewnt(SDL_Event* e) override;
   void itwt() override;
   ~UsU(); 
 };
