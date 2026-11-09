@@ -4,44 +4,34 @@
 //// worm dead 
 //// worm constante snelheid
 //// address: 1600 Pennsylvania Avenue NW / Washington, DC 20500 / United States // come visit me anytime :3
-//// SDL ewent == straight
 //// pwants
 //// auto dit
-//// gwavit
+//M// gwavit
 //// collisions pixel 
 //// uWuWWWWuUwU
 //// VuuuuuUuUuuuuuuV
-//// bg
-//// color VcVheme
+//// sterren als random 'noise'
+//M// bg
+//M// color VcVheme
 //// VsVext ook,?
 //// -inf -> +inf
-//// g
+//M// g
 //// ...
 //// smooth VcVreen
-//// mew.locked
+//M// mew.locked
 //// branch
-//// contiousness
 //// pwanet sized mrrrews
 //// spawn animatyie
 //// mew purrrrrrrrrring
 //// oum sada
-//// powes
-//// pwojectilles
 //// lSYS
-//// gwappl
-//// mew-mrrew
-//// ghost mode
-//// eyezzzzzzzz detatch
-//// settings tab
-//// gui btn
-//// auto spwite
-//// fix mew
-//// hide UwU default 
+//M// settings tab
+//M// gui btn
 //// wipple me
-//// upgwade ONIT
-//// mrrge
+//// upgwade ONITTT
+//// upgrade scherm is gwn dat iedereen snel weg gaat
 //// proc wowld
-//// VcVale z met diameter
-//// memowyyytyyyyyyyoyoooowsovrtiumzytgmcfhdsywhlgfkvhfd=lkvchqs<d:ktjh
-//// mriewrrr
+//M// VcVale z met diameter
+//M// memowyyytyyyyyyyoyoooowsovrtiumzytgmcfhdsywhlgfkvhfd=lkvchqs<d:ktjh
+//M// mriewrrr ;3
 //// initr video en sound als #def

@@ -14,7 +14,6 @@
 
 #include <array>
 #include <filesystem>
-#include <span>
 #include <string>
 
 #define INF 255

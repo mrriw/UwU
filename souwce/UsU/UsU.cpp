@@ -88,7 +88,7 @@ void UsU::rndrSpwite(const F &f, U4 i) {
 
   /// post-UuU in UwU
   // draaien
-  r[i] += 8;
+  // r[i] += 8;
 
   if (shTick - sh[i] >= (U8)animations[id[i]]->delays[fr[i]]) {
     fr[i] = ++fr[i] % animations[id[i]]->count;
@@ -153,7 +153,8 @@ void UsU::itwt() {
   SDL_RenderTexture(rndrr, texture, NULL, &r);
 
   SDL_RenderPresent(rndrr);
-  while (shTick + 1000 / S_FPS > SDL_GetTicks()) { }
+  while (shTick + 1000 / S_FPS > SDL_GetTicks()) {
+  }
   // DBG(SDL_GetTicks() - shTick);
   shTick = SDL_GetTicks();
 

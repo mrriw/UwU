@@ -1,21 +1,13 @@
 #include "UuU.h"
 
-/*
-#define SDL_MAIN_USE_CALLBACKS
-
-struct Vertex {
-  float x, y, z;
-};
-
 struct MyAppState {};
 
-SDL_GPUShader *LoadShader(SDL_GPUDevice *device,
-                          const std::string &shaderFilename) {
+SDL_GPUShader *UuU::LoadShader(const std::string &shaderFilename) {
   // Auto-detect the shader stage from the file name for convenience
   SDL_GPUShaderStage stage;
-  if (shaderFilename.contains(".vert")) {
+  if (shaderFilename.find(".vert") != std::string::npos) {
     stage = SDL_GPU_SHADERSTAGE_VERTEX;
-  } else if (shaderFilename.contains(".frag")) {
+  } else if (shaderFilename.find(".frag") != std::string::npos) {
     stage = SDL_GPU_SHADERSTAGE_FRAGMENT;
   } else {
     SDL_Log("Couldn't deduce shader stage from file name: %s",
@@ -24,7 +16,7 @@ SDL_GPUShader *LoadShader(SDL_GPUDevice *device,
   }
 
   std::filesystem::path fullPath =
-      std::filesystem::path(SDL_GetBasePath()) / "shaders";
+      std::filesystem::path(SDL_GetBasePath()) / "UuU/VuV";
   SDL_GPUShaderFormat format = SDL_GPU_SHADERFORMAT_INVALID;
   const char *entrypoint;
 
@@ -74,16 +66,14 @@ SDL_GPUShader *LoadShader(SDL_GPUDevice *device,
 }
 
 /// Returns true on success, false on failure
-bool CreatePipeline(MyAppState *myAppState) {
-  SDL_GPUShader *vertexShader =
-      LoadShader(myAppState->device, "OnlyPosition.vert");
+BT UuU::CreatePipeline() {
+  SDL_GPUShader *vertexShader = LoadShader("OnlyPosition.vert");
   if (vertexShader == nullptr) {
     SDL_Log("Couldn't create vertex shader!");
     return false;
   }
 
-  SDL_GPUShader *fragmentShader =
-      LoadShader(myAppState->device, "SolidColor.frag");
+  SDL_GPUShader *fragmentShader = LoadShader("SolidColor.frag");
   if (fragmentShader == nullptr) {
     SDL_Log("Couldn't create fragment shader!");
     return false;
@@ -120,8 +110,7 @@ bool CreatePipeline(MyAppState *myAppState) {
   };
 
   std::array colorTargetDescriptions{SDL_GPUColorTargetDescription{
-      .format = SDL_GetGPUSwapchainTextureFormat(myAppState->device,
-                                                 myAppState->window)}};
+      .format = SDL_GetGPUSwapchainTextureFormat(device, window)}};
 
   SDL_GPUGraphicsPipelineCreateInfo pipelineCreateInfo =
       SDL_GPUGraphicsPipelineCreateInfo{
@@ -147,31 +136,29 @@ bool CreatePipeline(MyAppState *myAppState) {
                   .num_color_targets = colorTargetDescriptions.size(),
               },
   };
-  myAppState->pipeline =
-      SDL_CreateGPUGraphicsPipeline(myAppState->device, &pipelineCreateInfo);
-  if (myAppState->pipeline == nullptr) {
+  pipeline = SDL_CreateGPUGraphicsPipeline(device, &pipelineCreateInfo);
+  if (pipeline == nullptr) {
     SDL_Log("Couldn't create graphics pipeline! %s", SDL_GetError());
     return false;
   }
 
-  SDL_ReleaseGPUShader(myAppState->device, vertexShader);
-  SDL_ReleaseGPUShader(myAppState->device, fragmentShader);
+  SDL_ReleaseGPUShader(device, vertexShader);
+  SDL_ReleaseGPUShader(device, fragmentShader);
 
   return true;
 }
 
 /// Returns true on success, false on failure
-bool CreateVertexBuffer(MyAppState *myAppState, std::span<Vertex> vertices) {
-  myAppState->numVertices = vertices.size();
-  Uint32 verticesSize = myAppState->numVertices * sizeof(Vertex);
+BT UuU::CreateVertexBuffer(std::vector<Vertex> vertices) {
+  numVertices = vertices.size();
+  Uint32 verticesSize = numVertices * sizeof(Vertex);
 
   SDL_GPUBufferCreateInfo vertexBufferCreateInfo = SDL_GPUBufferCreateInfo{
       .usage = SDL_GPU_BUFFERUSAGE_VERTEX,
       .size = verticesSize,
   };
-  myAppState->vertexBuffer =
-      SDL_CreateGPUBuffer(myAppState->device, &vertexBufferCreateInfo);
-  if (myAppState->vertexBuffer == nullptr) {
+  vertexBuffer = SDL_CreateGPUBuffer(device, &vertexBufferCreateInfo);
+  if (vertexBuffer == nullptr) {
     SDL_Log("Couldn't create vertex buffer: %s", SDL_GetError());
     return false;
   }
@@ -181,28 +168,27 @@ bool CreateVertexBuffer(MyAppState *myAppState, std::span<Vertex> vertices) {
           .usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD,
           .size = verticesSize,
   };
-  SDL_GPUTransferBuffer *transferBuffer = SDL_CreateGPUTransferBuffer(
-      myAppState->device, &transferBufferCreateInfo);
+  SDL_GPUTransferBuffer *transferBuffer =
+      SDL_CreateGPUTransferBuffer(device, &transferBufferCreateInfo);
   if (transferBuffer == nullptr) {
     SDL_Log("Couldn't create transfer buffer: %s", SDL_GetError());
     return false;
   }
 
   Vertex *transferData = static_cast<Vertex *>(
-      SDL_MapGPUTransferBuffer(myAppState->device, transferBuffer, false));
+      SDL_MapGPUTransferBuffer(device, transferBuffer, false));
   if (transferData == nullptr) {
     SDL_Log("Couldn't map transfer buffer: %s", SDL_GetError());
-    SDL_ReleaseGPUTransferBuffer(myAppState->device, transferBuffer);
+    SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
     return false;
   }
 
   SDL_memcpy(transferData, vertices.data(), verticesSize);
 
-  SDL_UnmapGPUTransferBuffer(myAppState->device, transferBuffer);
+  SDL_UnmapGPUTransferBuffer(device, transferBuffer);
 
   // Upload the transfer data to the vertex buffer
-  SDL_GPUCommandBuffer *uploadCmdBuf =
-      SDL_AcquireGPUCommandBuffer(myAppState->device);
+  SDL_GPUCommandBuffer *uploadCmdBuf = SDL_AcquireGPUCommandBuffer(device);
   if (uploadCmdBuf == nullptr) {
     SDL_Log("Couldn't acquire GPU command buffer: %s", SDL_GetError());
     return SDL_APP_FAILURE;
@@ -216,7 +202,7 @@ bool CreateVertexBuffer(MyAppState *myAppState, std::span<Vertex> vertices) {
   };
 
   SDL_GPUBufferRegion bufferRegion = SDL_GPUBufferRegion{
-      .buffer = myAppState->vertexBuffer,
+      .buffer = vertexBuffer,
       .offset = 0,
       .size = verticesSize,
   };
@@ -229,91 +215,78 @@ bool CreateVertexBuffer(MyAppState *myAppState, std::span<Vertex> vertices) {
     return false;
   }
 
-  SDL_ReleaseGPUTransferBuffer(myAppState->device, transferBuffer);
+  SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
 
   return true;
 }
 
-// This function runs once at startup
-SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
-  MyAppState *myAppState = new MyAppState();
-  *appstate = myAppState;
-
-  myAppState->window = SDL_CreateWindow("Hello, SDL GPU!", 1280, 720, 0);
-  if (myAppState->window == nullptr) {
+UuU::UuU() {
+  if (!U_DBG)
+    return;
+  window = SDL_CreateWindow("Hello, SDL GPU!", 1280, 720, 0);
+  if (window == nullptr) {
     SDL_Log("Couldn't create window: %s", SDL_GetError());
-    return SDL_APP_FAILURE;
+    return;
   }
 
   SDL_GPUShaderFormat formatFlags = SDL_GPU_SHADERFORMAT_SPIRV |
                                     SDL_GPU_SHADERFORMAT_DXIL |
                                     SDL_GPU_SHADERFORMAT_MSL;
-  myAppState->device = SDL_CreateGPUDevice(formatFlags, true, nullptr);
-  if (myAppState->device == nullptr) {
+  device = SDL_CreateGPUDevice(formatFlags, true, nullptr);
+  if (device == nullptr) {
     SDL_Log("Couldn't create GPU device: %s", SDL_GetError());
-    return SDL_APP_FAILURE;
+    return;
   }
 
-  if (!SDL_ClaimWindowForGPUDevice(myAppState->device, myAppState->window)) {
+  if (!SDL_ClaimWindowForGPUDevice(device, window)) {
     SDL_Log("Couldn't claim window for GPU device: %s", SDL_GetError());
-    return SDL_APP_FAILURE;
+    return;
   }
 
-  if (!CreatePipeline(myAppState)) {
+  if (!CreatePipeline()) {
     // Error message already logged in the function
-    return SDL_APP_FAILURE;
+    return;
   }
 
   // Counter-Clockwise order:
   std::array vertices{
-      Vertex{-1.0f, -1.0f, 0.0f}, // Bottom-Left
-      Vertex{1.0f, -1.0f, 0.0f},  // Bottom-Right
-      Vertex{0.0f, 1.0f, 0.0f},   // Top-Middle
+      Vertex{0.5f, 0.5f, 0.0f},   // Bottom-Left
+      Vertex{-0.5f, 0.5f, 0.0f},  // Bottom-Right
+      Vertex{0.0f, -0.5f, 0.0f},  // Top-Middle
+      Vertex{-0.5f, -0.5f, 0.0f}, // 2Bottom-Left
+      Vertex{0.5f, -0.5f, 0.0f},  // 2Bottom-Right
+      Vertex{0.0f, 0.5f, 0.0f},   // 2Top-Middle
   };
-  if (!CreateVertexBuffer(myAppState, vertices)) {
+
+  std::vector<Vertex> vertexVector(vertices.begin(), vertices.end());
+  if (!CreateVertexBuffer(vertexVector)) {
     // Error message already logged in the function
-    return SDL_APP_FAILURE;
-  }
-
-  // Continue running the application
-  return SDL_APP_CONTINUE;
-}
-
-// This function runs when a new event (mouse input, keypresses, etc) occurs
-SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
-  switch (event->type) {
-  case SDL_EVENT_QUIT:
-    // Quit the application with a success state
-    return SDL_APP_SUCCESS;
-  default:
-    // Continue running the application
-    return SDL_APP_CONTINUE;
+    return;
   }
 }
 
-// This function runs once per frame, and is the heart of the application
-SDL_AppResult SDL_AppIterate(void *appstate) {
-  MyAppState *myAppState = static_cast<MyAppState *>(appstate);
+void UuU::ewnt(SDL_Event *e) {}
 
-  SDL_GPUCommandBuffer *commandBuffer =
-      SDL_AcquireGPUCommandBuffer(myAppState->device);
+void UuU::itwt() {
+  if (!U_DBG)
+    return;
+  SDL_GPUCommandBuffer *commandBuffer = SDL_AcquireGPUCommandBuffer(device);
   if (commandBuffer == nullptr) {
     SDL_Log("Couldn't acquire GPU command buffer: %s", SDL_GetError());
-    return SDL_APP_FAILURE;
+    return;
   }
 
   SDL_GPUTexture *swapchainTexture;
-  if (!SDL_WaitAndAcquireGPUSwapchainTexture(commandBuffer, myAppState->window,
-                                             &swapchainTexture, nullptr,
-                                             nullptr)) {
+  if (!SDL_WaitAndAcquireGPUSwapchainTexture(
+          commandBuffer, window, &swapchainTexture, nullptr, nullptr)) {
     SDL_Log("Couldn't acquire swapchain texture: %s", SDL_GetError());
-    return SDL_APP_FAILURE;
+    return;
   }
 
   if (swapchainTexture != nullptr) {
     SDL_GPUColorTargetInfo colorTargetInfo = {
         .texture = swapchainTexture,
-        .clear_color = SDL_FColor{0.4f, 0.6f, 0.9f, 1.0f},
+        .clear_color = SDL_FColor{0.4f, 0.0f, 0.5f, 1.0f},
         .load_op = SDL_GPU_LOADOP_CLEAR,
         .store_op = SDL_GPU_STOREOP_STORE,
     };
@@ -321,61 +294,29 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     SDL_GPURenderPass *renderPass =
         SDL_BeginGPURenderPass(commandBuffer, &colorTargetInfo, 1, nullptr);
 
-    SDL_BindGPUGraphicsPipeline(renderPass, myAppState->pipeline);
+    SDL_BindGPUGraphicsPipeline(renderPass, pipeline);
 
     std::array vertexBuffers{
         SDL_GPUBufferBinding{
-            .buffer = myAppState->vertexBuffer,
+            .buffer = vertexBuffer,
             .offset = 0,
         },
     };
     SDL_BindGPUVertexBuffers(renderPass, 0, vertexBuffers.data(),
                              vertexBuffers.size());
 
-    SDL_DrawGPUPrimitives(renderPass, myAppState->numVertices, 1, 0, 0);
+    SDL_DrawGPUPrimitives(renderPass, numVertices, 1, 0, 0);
 
     SDL_EndGPURenderPass(renderPass);
   }
 
   SDL_SubmitGPUCommandBuffer(commandBuffer);
-
-  // Continue running the application
-  return SDL_APP_CONTINUE;
 }
 
-// This function runs once at shutdown
-void SDL_AppQuit(void *appstate, SDL_AppResult result) {
-  switch (result) {
-  case SDL_APP_SUCCESS:
-    SDL_Log("Application quit successfully");
-    break;
-  case SDL_APP_FAILURE:
-    SDL_Log("Application quit with an error");
-    break;
-  default:
-    SDL_Log("Application quit with an unexpected result");
-    break;
-  }
-
-  MyAppState *myAppState = static_cast<MyAppState *>(appstate);
-
-  SDL_ReleaseGPUBuffer(myAppState->device, myAppState->vertexBuffer);
-  SDL_ReleaseGPUGraphicsPipeline(myAppState->device, myAppState->pipeline);
-
-  SDL_ReleaseWindowFromGPUDevice(myAppState->device, myAppState->window);
-  SDL_DestroyGPUDevice(myAppState->device);
-  SDL_DestroyWindow(myAppState->window);
-
-  delete myAppState;
+UuU::~UuU() {
+  SDL_ReleaseGPUBuffer(device, vertexBuffer);
+  SDL_ReleaseGPUGraphicsPipeline(device, pipeline);
+  SDL_ReleaseWindowFromGPUDevice(device, window);
+  SDL_DestroyGPUDevice(device);
+  SDL_DestroyWindow(window);
 }
-
-#include "GPU.h"
-
-GPU::GPU() {}
-
-void GPU::ewnt(SDL_Event *e) {}
-
-void GPU::itwt() { SDL_AppQuit }
-*/
-
-UuU::UuU() {}
